@@ -1,0 +1,9 @@
+{
+  "name": "saturn-reg",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "mysql2": "^3.11.3",
+    "nodemailer": "^6.9.15"
+  }
+}
