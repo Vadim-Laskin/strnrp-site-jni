@@ -1,1 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070b14">
+<meta name="robots" content="noindex">
+<title>Регистрация | САТУРН РП</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i></div><div class="stars"></div>
 
+<main class="card">
+  <div class="logo"><b>SATURN</b><span>role play</span></div>
+  <div class="dots"><i class="on"></i><i></i><i></i></div>
+
+  <section class="step on" id="s1">
+    <h1>Регистрация аккаунта</h1>
+    <p class="sub">Создайте аккаунт и начните играть</p>
+    <div class="err" id="e1"></div>
+    <form id="f1" autocomplete="off" novalidate>
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off">
+      <div class="f"><input id="nick" placeholder=" " maxlength="24" autocapitalize="off"><label for="nick">Игровой ник</label></div>
+      <div class="hint">Формат: Имя_Фамилия, только латиница</div>
+      <div class="f"><input id="email" type="email" placeholder=" " maxlength="32"><label for="email">E-mail</label></div>
+      <div class="f"><input id="pass" type="password" placeholder=" " maxlength="32"><label for="pass">Пароль (от 6 символов)</label></div>
+      <div class="f"><input id="pass2" type="password" placeholder=" " maxlength="32"><label for="pass2">Повторите пароль</label></div>
+      <label class="chk"><input type="checkbox" id="agree"><span>Я принимаю <a href="docs/agreement-ready.html" target="_blank">пользовательское соглашение</a> и <a href="docs/privacy-policy.html" target="_blank">политику конфиденциальности</a></span></label>
+      <button class="btn" id="b1">Получить код на почту</button>
+    </form>
+  </section>
+
+  <section class="step" id="s2">
+    <h1>Подтверждение e-mail</h1>
+    <p class="sub">Мы отправили 6-значный код на</p>
+    <div class="mail" id="mailShow"></div>
+    <div class="err" id="e2"></div>
+    <div class="code" id="code"></div>
+    <button class="btn" id="b2">Подтвердить</button>
+    <button class="link" id="back">← Изменить данные</button>
+  </section>
+
+  <section class="step done" id="s3">
+    <svg class="tick" viewBox="0 0 88 88"><circle cx="44" cy="44" r="40"/><path d="M26 45l12 12 24-26"/></svg>
+    <h1>Аккаунт создан!</h1>
+    <p class="sub">Теперь можно заходить в игру под ником <b id="nickShow"></b></p>
+    <a href="test.html" class="btn" style="display:block;text-decoration:none;text-align:center">Начать игру</a>
+  </section>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+let token = '';
+const dots = [...document.querySelectorAll('.dots i')];
+
+function show(n) {
+  document.querySelectorAll('.step').forEach((e) => e.classList.remove('on'));
+  $('#s' + n).classList.add('on');
+  dots.forEach((d, i) => d.classList.toggle('on', i < n));
+}
+function showErr(id, list) {
+  const el = $(id);
+  el.classList.remove('on'); void el.offsetWidth;
+  el.innerHTML = '<ul>' + list.map((t) => '<li>' + t.replace(/</g, '&lt;') + '</li>').join('') + '</ul>';
+  el.classList.add('on');
+}
+async function post(url, data) {
+  try {
+    const r = await fetch('/.netlify/functions/' + url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    return { ok: r.ok, ...(await r.json()) };
+  } catch { return { ok: false, errors: ['Нет соединения с сервером.'] }; }
+}
+const busy = (b, on) => { b.disabled = on; b.classList.toggle('load', on); };
+
+// --- шаг 1
+$('#f1').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const nickname = $('#nick').value.trim(), email = $('#email').value.trim(), password = $('#pass').value;
+  const errs = [];
+  if (!/^[A-Za-z]+_[A-Za-z]+$/.test(nickname) || nickname.length < 5) errs.push('Ник должен быть в формате Имя_Фамилия (латиница).');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.push('Укажите корректный e-mail.');
+  if (password.length < 6) errs.push('Пароль должен быть от 6 символов.');
+  if (password !== $('#pass2').value) errs.push('Пароли не совпадают.');
+  if (!$('#agree').checked) errs.push('Необходимо принять пользовательское соглашение.');
+  if (errs.length) return showErr('#e1', errs);
+  $('#e1').classList.remove('on');
+  busy($('#b1'), true);
+  const r = await post('register', { nickname, email, password, website: $('[name=website]').value });
+  busy($('#b1'), false);
+  if (!r.ok) return showErr('#e1', r.errors || [r.error || 'Ошибка']);
+  token = r.token;
+  $('#mailShow').textContent = email;
+  show(2);
+  $('#code input').focus();
+});
+
+// --- шаг 2: поля кода
+const box = $('#code');
+for (let i = 0; i < 6; i++) {
+  const inp = document.createElement('input');
+  inp.inputMode = 'numeric'; inp.maxLength = 1; inp.autocomplete = i ? 'off' : 'one-time-code';
+  inp.addEventListener('input', () => {
+    inp.value = inp.value.replace(/\D/g, '');
+    if (inp.value && inp.nextElementSibling) inp.nextElementSibling.focus();
+    if (getCode().length === 6) $('#b2').click();
+  });
+  inp.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !inp.value && inp.previousElementSibling) inp.previousElementSibling.focus(); });
+  inp.addEventListener('paste', (e) => {
+    const t = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+    if (!t) return; e.preventDefault();
+    [...box.children].forEach((c, k) => (c.value = t[k] || ''));
+    box.children[Math.min(t.length, 5)].focus();
+    if (t.length === 6) $('#b2').click();
+  });
+  box.appendChild(inp);
+}
+const getCode = () => [...box.children].map((c) => c.value).join('');
+
+$('#b2').addEventListener('click', async () => {
+  const code = getCode();
+  if (code.length !== 6) return showErr('#e2', ['Введите 6-значный код.']);
+  $('#e2').classList.remove('on');
+  busy($('#b2'), true);
+  const r = await post('confirm', { token, code });
+  busy($('#b2'), false);
+  if (r.ok) { $('#nickShow').textContent = $('#nick').value.trim(); return show(3); }
+  showErr('#e2', r.errors || ['Ошибка']);
+  [...box.children].forEach((c) => (c.value = ''));
+  box.children[0].focus();
+  if (r.expired) setTimeout(() => show(1), 2200);
+});
+$('#back').addEventListener('click', () => show(1));
+</script>
+</body>
+</html>
