@@ -4,3 +4,9 @@
 
 [functions]
   node_bundler = "esbuild"
+
+[[headers]]
+  for = "/files/*.apk"
+  [headers.values]
+    Content-Type = "application/vnd.android.package-archive"
+    Content-Disposition = "attachment"
