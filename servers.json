@@ -2,7 +2,7 @@
     {
       "ip": "185.207.214.14",
       "port": 4317,
-      "x2": "true",
+      "x2": "false",
       "name": "TEST",
       "online": 1,
       "maxonline": 1000
