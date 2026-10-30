@@ -5,92 +5,132 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#070b14">
 <meta name="robots" content="noindex">
-<title>Скачать игру | САТУРН РП</title>
+<title>Регистрация | САТУРН РП</title>
 <link rel="stylesheet" href="style.css">
-<style>
-.dl{display:flex;gap:14px;align-items:center;margin:0 0 18px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#0b1120}
-.dl svg{width:42px;height:42px;flex:none;animation:bob 2.4s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-4px)}}
-.dl b{display:block;font-size:15px}.dl span{font-size:13px;color:var(--mut)}
-.steps{list-style:none;padding:0;margin:0 0 20px;counter-reset:s}
-.steps li{counter-increment:s;display:flex;gap:12px;font-size:14px;color:var(--mut);margin-bottom:10px;align-items:flex-start;opacity:0;animation:in .5s ease forwards}
-.steps li:nth-child(2){animation-delay:.15s}.steps li:nth-child(3){animation-delay:.3s}
-.steps li::before{content:counter(s);flex:none;width:24px;height:24px;border-radius:50%;background:linear-gradient(90deg,var(--acc),var(--acc2));color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center}
-.cd{display:flex;gap:8px;justify-content:center;margin:0 0 18px}
-.cd div{flex:1;max-width:76px;text-align:center;padding:12px 0 8px;border:1px solid var(--line);border-radius:12px;background:#0b1120}
-.cd b{display:block;font-size:26px;font-variant-numeric:tabular-nums}
-.cd b.tick{animation:flip .35s ease}
-@keyframes flip{from{transform:translateY(-8px);opacity:0}}
-.cd span{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
-.lock .btn{background:#1b2338;color:var(--mut);pointer-events:none;box-shadow:none}
-.until{text-align:center;font-size:13px;color:var(--mut);margin:-6px 0 16px}
-.note{font-size:12px;color:var(--mut);text-align:center;margin-top:14px;display:none}
-.note.on{display:block}
-.btn{display:block;text-decoration:none;text-align:center}
-</style>
 </head>
 <body>
 <div class="bg"><i></i><i></i><i></i></div><div class="stars"></div>
 
 <main class="card">
   <div class="logo"><b>SATURN</b><span>role play</span></div>
-  <h1>Скачать игру</h1>
-  <p class="sub">Установите клиент и войдите под своим ником</p>
+  <div class="dots"><i class="on"></i><i></i><i></i></div>
 
-  <div class="dl">
-    <svg viewBox="0 0 48 48" fill="none" stroke="#4da3ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6v24M14 22l10 10 10-10M8 40h32"/></svg>
-    <div><b>САТУРН РП для Android</b><span id="meta">Версия 1.0 · APK</span></div>
-  </div>
+  <section class="step on" id="s1">
+    <h1>Регистрация аккаунта</h1>
+    <p class="sub">Создайте аккаунт и начните играть</p>
+    <div class="err" id="e1"></div>
+    <form id="f1" autocomplete="off" novalidate>
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off">
+      <div class="f"><input id="nick" placeholder=" " maxlength="24" autocapitalize="off"><label for="nick">Игровой ник</label></div>
+      <div class="hint">Формат: Имя_Фамилия, только латиница</div>
+      <div class="f"><input id="email" type="email" placeholder=" " maxlength="32"><label for="email">E-mail</label></div>
+      <div class="f"><input id="pass" type="password" placeholder=" " maxlength="32"><label for="pass">Пароль (от 6 символов)</label></div>
+      <div class="f"><input id="pass2" type="password" placeholder=" " maxlength="32"><label for="pass2">Повторите пароль</label></div>
+      <label class="chk"><input type="checkbox" id="agree"><span>Я принимаю <a href="docs/agreement-ready.html" target="_blank">пользовательское соглашение</a> и <a href="docs/privacy-policy.html" target="_blank">политику конфиденциальности</a></span></label>
+      <button class="btn" id="b1">Получить код на почту</button>
+    </form>
+  </section>
 
-  <ol class="steps">
-    <li>Нажмите «Скачать» и дождитесь загрузки файла</li>
-    <li>Откройте APK. Если телефон просит — разрешите установку из этого источника</li>
-    <li>Запустите игру и войдите с ником и паролем из регистрации</li>
-  </ol>
+  <section class="step" id="s2">
+    <h1>Подтверждение e-mail</h1>
+    <p class="sub">Мы отправили 6-значный код на</p>
+    <div class="mail" id="mailShow"></div>
+    <div class="err" id="e2"></div>
+    <div class="code" id="code"></div>
+    <button class="btn" id="b2">Подтвердить</button>
+    <button class="link" id="back">← Изменить данные</button>
+  </section>
 
-  <div id="timer">
-    <div class="until">Скачивание откроется 30 октября 2026</div>
-    <div class="cd"><div><b id="d">0</b><span>дн</span></div><div><b id="h">00</b><span>час</span></div><div><b id="m">00</b><span>мин</span></div><div><b id="s">00</b><span>сек</span></div></div>
-  </div>
-  <a class="btn" id="dl" href="https://www.dropbox.com/scl/fi/6rph9bsslmta52b3tw8ec/strnrp.apk?rlkey=izm95oqzr9rvat516sbx8sxwq&st=0tcricgf&dl=1">Скачать APK</a>
-  <div class="note" id="note">Вы открыли страницу не на Android — откройте её на телефоне, чтобы установить игру.</div>
-  <a class="link" href="index.html" style="text-align:center;text-decoration:none">← Регистрация</a>
+  <section class="step done" id="s3">
+    <svg class="tick" viewBox="0 0 88 88"><circle cx="44" cy="44" r="40"/><path d="M26 45l12 12 24-26"/></svg>
+    <h1>Аккаунт создан!</h1>
+    <p class="sub">Теперь можно заходить в игру под ником <b id="nickShow"></b></p>
+    <a href="index.html" class="btn" style="display:block;text-decoration:none;text-align:center">Скачать игру</a>
+  </section>
 </main>
 
 <script>
-// Дата открытия (сравнивается только дата, по времени Москвы)
-const RELEASE = '2026-10-30';
-const VERSION = '1.0';
-// Полночь 30.10.2026 по МСК (UTC+3) = 29.10 21:00 UTC
-const TARGET = Date.UTC(2026, 9, 29, 21, 0, 0);
+const $ = (s) => document.querySelector(s);
+let token = '';
+const dots = [...document.querySelectorAll('.dots i')];
 
-const $ = (id) => document.getElementById(id);
-const card = document.querySelector('.card');
-$('meta').textContent = 'Версия ' + VERSION + ' · APK';
-
-const todayMsk = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
-const pad = (n) => String(n).padStart(2, '0');
-function set(id, v) { const e = $(id); if (e.textContent !== v) { e.textContent = v; e.classList.remove('tick'); void e.offsetWidth; e.classList.add('tick'); } }
-
-function update() {
-  if (todayMsk() >= RELEASE) {
-    $('timer').style.display = 'none';
-    card.classList.remove('lock');
-    $('dl').textContent = 'Скачать APK';
-    if (!/android/i.test(navigator.userAgent)) $('note').classList.add('on');
-    return false;
-  }
-  card.classList.add('lock');
-  $('dl').textContent = '🔒 Скоро';
-  let t = Math.max(0, Math.floor((TARGET - Date.now()) / 1000));
-  set('d', String(Math.floor(t / 86400))); t %= 86400;
-  set('h', pad(Math.floor(t / 3600))); t %= 3600;
-  set('m', pad(Math.floor(t / 60)));
-  set('s', pad(t % 60));
-  return true;
+function show(n) {
+  document.querySelectorAll('.step').forEach((e) => e.classList.remove('on'));
+  $('#s' + n).classList.add('on');
+  dots.forEach((d, i) => d.classList.toggle('on', i < n));
 }
-if (update()) { const iv = setInterval(() => { if (!update()) clearInterval(iv); }, 1000); }
-$('dl').addEventListener('click', (e) => { if (card.classList.contains('lock')) e.preventDefault(); });
+function showErr(id, list) {
+  const el = $(id);
+  el.classList.remove('on'); void el.offsetWidth;
+  el.innerHTML = '<ul>' + list.map((t) => '<li>' + t.replace(/</g, '&lt;') + '</li>').join('') + '</ul>';
+  el.classList.add('on');
+}
+async function post(url, data) {
+  try {
+    const r = await fetch('/.netlify/functions/' + url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    return { ok: r.ok, ...(await r.json()) };
+  } catch { return { ok: false, errors: ['Нет соединения с сервером.'] }; }
+}
+const busy = (b, on) => { b.disabled = on; b.classList.toggle('load', on); };
+
+// --- шаг 1
+$('#f1').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const nickname = $('#nick').value.trim(), email = $('#email').value.trim(), password = $('#pass').value;
+  const errs = [];
+  if (!/^[A-Za-z]+_[A-Za-z]+$/.test(nickname) || nickname.length < 5) errs.push('Ник должен быть в формате Имя_Фамилия (латиница).');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.push('Укажите корректный e-mail.');
+  if (password.length < 6) errs.push('Пароль должен быть от 6 символов.');
+  if (password !== $('#pass2').value) errs.push('Пароли не совпадают.');
+  if (!$('#agree').checked) errs.push('Необходимо принять пользовательское соглашение.');
+  if (errs.length) return showErr('#e1', errs);
+  $('#e1').classList.remove('on');
+  busy($('#b1'), true);
+  const r = await post('register', { nickname, email, password, website: $('[name=website]').value });
+  busy($('#b1'), false);
+  if (!r.ok) return showErr('#e1', r.errors || [r.error || 'Ошибка']);
+  token = r.token;
+  $('#mailShow').textContent = email;
+  show(2);
+  $('#code input').focus();
+});
+
+// --- шаг 2: поля кода
+const box = $('#code');
+for (let i = 0; i < 6; i++) {
+  const inp = document.createElement('input');
+  inp.inputMode = 'numeric'; inp.maxLength = 1; inp.autocomplete = i ? 'off' : 'one-time-code';
+  inp.addEventListener('input', () => {
+    inp.value = inp.value.replace(/\D/g, '');
+    if (inp.value && inp.nextElementSibling) inp.nextElementSibling.focus();
+    if (getCode().length === 6) $('#b2').click();
+  });
+  inp.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !inp.value && inp.previousElementSibling) inp.previousElementSibling.focus(); });
+  inp.addEventListener('paste', (e) => {
+    const t = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+    if (!t) return; e.preventDefault();
+    [...box.children].forEach((c, k) => (c.value = t[k] || ''));
+    box.children[Math.min(t.length, 5)].focus();
+    if (t.length === 6) $('#b2').click();
+  });
+  box.appendChild(inp);
+}
+const getCode = () => [...box.children].map((c) => c.value).join('');
+
+$('#b2').addEventListener('click', async () => {
+  const code = getCode();
+  if (code.length !== 6) return showErr('#e2', ['Введите 6-значный код.']);
+  $('#e2').classList.remove('on');
+  busy($('#b2'), true);
+  const r = await post('confirm', { token, code });
+  busy($('#b2'), false);
+  if (r.ok) { $('#nickShow').textContent = $('#nick').value.trim(); return show(3); }
+  showErr('#e2', r.errors || ['Ошибка']);
+  [...box.children].forEach((c) => (c.value = ''));
+  box.children[0].focus();
+  if (r.expired) setTimeout(() => show(1), 2200);
+});
+$('#back').addEventListener('click', () => show(1));
 </script>
 </body>
 </html>
